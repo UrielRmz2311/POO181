@@ -347,4 +347,25 @@
   [hidden] {
     display: none;
   }
+
   
+   /* <div class="citas">
+        <a class="btn-b btn-light" href="">Agendar Citas</a>
+      </div>
+
+      <div class="registrarPac">
+        <a class="btn-b btn-light" href="">Registrar Pacientes</a>
+      </div>
+
+      <div class="diagnostico">
+        <a class="btn-b btn-light" href="">Cita de exploración y diagnostico</a>
+      </div>
+
+      <div class="consultarcita">
+        <a class="btn-b btn-light" href="">Consultar Citas</a>
+      </div>
+
+      <div class="consultarpac">
+        <a class="btn-b btn-light" href="">Consultar Pacientes</a>
+      </div>
+     */

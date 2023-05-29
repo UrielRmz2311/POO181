@@ -1,0 +1,76 @@
+body {
+    background-image: url("../imagenes/inicio.jpg");
+    background-position: center center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-size:cover;
+    background-color:cornflowerblue;
+}
+.reloj{
+    color: rgb(0, 56, 197);
+    padding:20 px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.container{
+    top:10vh;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0px 0px 30px 0px #2cd3c0;
+}
+
+.expedientes{
+    
+    position: fixed;
+    left: 20px;
+    top: 75px;
+}
+
+.citas{
+    position: fixed;
+    left: 20px;
+    top: 215px;
+}
+
+.registrarPac{
+    position: fixed;
+    left: 20px;
+    top: 350px;
+}
+
+.diagnostico{
+    position: fixed;
+    left: 20px;
+    top: 485px;
+}
+
+.consultarcita{
+    position: fixed;
+    left: 20px;
+    top: 615px;
+}
+
+.consultarpac{
+    position: fixed;
+    left: 20px;
+    top: 750px;
+}
+
+.btn-a{
+    display: inline-block;
+    margin: 20px 0px; 
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 55px;
+}
+
+.btn-b{
+    display: inline-block;
+    margin: 35px 35px; 
+    padding: 35px 220px;
+    text-decoration: none;
+    font-size: 75px;
+}
+
+
