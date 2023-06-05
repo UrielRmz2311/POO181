@@ -49,7 +49,16 @@ def cambiar_ventana():
         for user in rsBebida:
             tablam.insert("", tk.END, text="", values=user)
         txtcant.insert("0.0",num_filas) # Mostrar el número de elementos en la tabla
-            
+        
+    # 5 Buscar clasificacion -------------------------------------------------------------------------
+    def Buscarclasificacion():
+        rsBebida = controlador.consultaclasificacion(varClasifi.get())
+        num_filas = len(rsBebida) # Contar el número de tuplas devueltas por la consulta
+        tablac.delete(*tablac.get_children())
+        for user in rsBebida:
+            tablac.insert("", tk.END, text="", values=user)
+        txtclasi.insert("0.0",num_filas) # Mostrar el número de elementos en la tabla
+               
     # Calcular precio ---------------------------------------------------------
     titulo5 = Label(CalcularPrecio, text = "Calcular Precio promedio de bebidas", fg = "green", font = ("Arial", 18)).pack()
     
@@ -87,8 +96,39 @@ def cambiar_ventana():
     txtcant = tk.Text(CantidadMarca, height = 2, width = 52)
     txtcant.pack()
     # Cantidad por Clasificación ----------------------------------------------
-    titulo7= Label(CantidadClasi, text = "Cantidad por clasificación", fg = "red", font = ("Arial", 18)).pack()
+    titulo7= Label(CantidadClasi, text = "Cantidad por clasificación", fg = "red", font = ("Arial", 18))
+    titulo7.pack()
     
+    iblmClasifi= Label(CantidadClasi, text= "Clasificación de Bebida: ")
+    iblmClasifi.pack()
+    values3 = ("Energetica", "Azucarada", "Agua","Alcoholica","Soda")
+    varClasifi= ttk.Combobox(CantidadClasi, values=values3)
+    varClasifi.pack()
+
+    btnBuscarclasi = Button(CantidadClasi, text = "Buscar",command=Buscarclasificacion)
+    btnBuscarclasi.pack()
+    
+    columns = ("id", "nombre", "clasificacion", "marca", "precio")
+    tablac = ttk.Treeview(CantidadClasi, columns = columns, show = "headings")
+
+    tablac.column("id", anchor=tk.W, width=30)
+    tablac.column("nombre", anchor=tk.W, width=130)
+    tablac.column("clasificacion", anchor=tk.W, width=130)
+    tablac.column("marca", anchor=tk.W, width=130)
+    tablac.column("precio", anchor=tk.W, width=180)
+
+    tablac.heading("id", text = "ID", )
+    tablac.heading("nombre", text = "NOMBRE")
+    tablac.heading("clasificacion", text = "CLASIFICACIÓN")
+    tablac.heading("marca", text = "MARCA")
+    tablac.heading("precio", text = "PRECIO")
+
+    tablac.pack()
+    
+    cantidaclasi= Label(CantidadClasi, text = "Cantidad", fg = "blue", font = ("Arial", 12))
+    cantidaclasi.pack()
+    txtclasi = tk.Text(CantidadClasi, height = 2, width = 52)
+    txtclasi.pack()
     # Volver ------------------------------------------------------------------
     titulo8= Label(volver, text = "Volver a Ventana Inicio", fg = "red", font = ("Arial", 18)).pack()
     

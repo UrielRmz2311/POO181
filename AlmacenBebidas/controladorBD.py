@@ -131,6 +131,30 @@ class controlBD:
 
             except sqlite3.OperationalError:
                 print("Error de consulta")
+
+    def consultaclasificacion(self, bebida):
+        # Llamar a la conexión
+        conx = self.conexionBD()
+
+        # Verificar que la bebida no esté vacía
+        if bebida == "":
+            messagebox.showwarning("Advertencia", "Revisa tu formulario, no puedes dejar campos vacíos")
+            conx.close()
+        else:
+            try:
+                # Preparar lo necesario para el select
+                cursor = conx.cursor()
+                sqlSelect = "SELECT * FROM Bebidas WHERE clasificacion=?"
+
+                # Ejecutar y guardar la consulta
+                cursor.execute(sqlSelect, (bebida,))
+                RSbebida = cursor.fetchall()
+                conx.close()
+
+                return RSbebida
+
+            except sqlite3.OperationalError:
+                print("Error de consulta")
 # -----------------------------------------------------------------------------  
     def consultarBebidas(self):
         conx = self.conexionBD()
