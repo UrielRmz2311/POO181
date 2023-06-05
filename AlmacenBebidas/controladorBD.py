@@ -194,4 +194,25 @@ class controlBD:
             
             except sqlite3.OperationalError:
                 print("Error Consulta")
+# ------------------------------------------------------------------------------------
+    def Precio(self):
+        conx = self.conexionBD()
+        
+        try:
+                cursor = conx.cursor()
+                sqlPrecio = "SELECT precio FROM Bebidas"
+                
+                cursor.execute(sqlPrecio)
+                Resultbebida = cursor.fetchall()
+                
+                cantidaBebi = len(Resultbebida)
+                sumPrecios = sum([precio[0] for precio in Resultbebida])
+                precioProm = sumPrecios / cantidaBebi
+                
+                conx.close()
+                
+                return precioProm
             
+        except sqlite3.OperationalError:
+                print("Error de Consulta")
+# --------------------------------------------------------------------------------------
