@@ -59,7 +59,7 @@ class controlBD:
                 return eliminarbebida
             
             except sqlite3.OperationalError:
-                print("Error Consulta")
+                messagebox.showwarning("Error Consulta")
 # ------------------------------------------------------------------------------------------------------
     def consultaBebida(self, bebida):
         # Llamar a la conexión
