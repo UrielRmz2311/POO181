@@ -60,10 +60,55 @@ def cambiar_ventana():
         for user in rsBebida:
             tablac.insert("", tk.END, text="", values=user)
         txtclasi.insert("0.0",num_filas) # Mostrar el número de elementos en la tabla
-               
+        
+    # 6 Promedio de las Bebidas------------------------------------------------------------------------
+    def EjecutaPromedio():
+        promedio = controlador.Precio()
+        
+        txtpromedio.delete("1.0", "end")
+        cadena = str(promedio)
+        if(promedio):
+            txtpromedio.insert("0.0", cadena)
+        else:
+            messagebox.showinfo("No encontrado", "Marca no registrada en la BD")
+    # 7 Consultar Bebidas ----------------------------------------------------------------------------
+    def ConsultardeBebidas():
+        Registrados = controlador.consultarBebidas()
+        tabla.delete(*tabla.get_children())
+        for user in Registrados:
+            tabla.insert("", tk.END, text = "", values = user)
+
     # Calcular precio ---------------------------------------------------------
-    titulo5 = Label(CalcularPrecio, text = "Calcular Precio promedio de bebidas", fg = "green", font = ("Arial", 18)).pack()
+    titulo5 = Label(CalcularPrecio, text = "Calcular Precio promedio de bebidas", fg = "green", font = ("Arial", 18))
+    titulo5.pack()
     
+    btnConsultar = Button(CalcularPrecio, text = "Consultar Bebidas", command=ConsultardeBebidas)
+    btnConsultar.pack()
+    
+    columns = ("id", "nombre", "clasificacion", "marca", "precio")
+    tabla = ttk.Treeview(CalcularPrecio, columns = columns, show = "headings")
+
+    tabla.column("id", anchor=tk.W, width=30)
+    tabla.column("nombre", anchor=tk.W, width=130)
+    tabla.column("clasificacion", anchor=tk.W, width=130)
+    tabla.column("marca", anchor=tk.W, width=130)
+    tabla.column("precio", anchor=tk.W, width=180)
+
+    tabla.heading("id", text = "ID", )
+    tabla.heading("nombre", text = "NOMBRE")
+    tabla.heading("clasificacion", text = "CLASIFICACIÓN")
+    tabla.heading("marca", text = "MARCA")
+    tabla.heading("precio", text = "PRECIO")
+
+    tabla.pack()
+
+    btngenerarpro = Button(CalcularPrecio, text = "Generar Promedio",command=EjecutaPromedio)
+    btngenerarpro.pack()
+    
+    promedio= Label(CalcularPrecio, text = "Promedio Total", fg = "blue", font = ("Arial", 12))
+    promedio.pack()
+    txtpromedio = tk.Text(CalcularPrecio, height = 2, width = 52)
+    txtpromedio.pack()
     # Cantidad por Marca ------------------------------------------------------
     titulo6= Label(CantidadMarca, text = "Cantidad de bebidas de una Marca", fg = "blue", font = ("Arial", 18)).pack()
     
