@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
+from controladorBD import *
+
+# Crear una instancia de tipo controlador
+controlador= controlBD()
 
 # Ventana 1 ------------------------------------------------------------------
 
@@ -19,7 +23,7 @@ otras=ttk.Frame(panel)
 
 # Metodos ---------------------------------------------------------------------
 
-   # 1. -----------------------------------------------------------------------
+   # 1. Segunda Ventana -----------------------------------------------------------------------
 def cambiar_ventana():
     def cambiarainicio ():
         otras_op.withdraw()
@@ -56,28 +60,32 @@ def cambiar_ventana():
     panel2.add(CantidadClasi,text="Cantidad Clasificación")
     panel2.add(volver,text="Regresar")
     
+   # 2. Guardar Bebida -----------------------------------------------------------------------
+def ejecutaInsert():
+    controlador.guardarBebida(varBe.get(),varClas.get(),varmar.get(), varPre.get())
+
 # Alta de Bebidas -------------------------------------------------------------
 titulo= Label(alta,text="Alta de Bebidas", fg="Blue", font=("Arial",18)).pack()
 
 varBe= tk.StringVar()
-iblBe= Label(alta, text="Nombre Bebida: ").pack()
+iblBe= Label(alta, text="Nombre Bebida y capacida (1L ,2L ,3L, etc.): ").pack()
 txtBe= Entry(alta, textvariable=varBe).pack()
 
-varClas= tk.StringVar()
+
 iblmClas= Label(alta, text= "Clasificación: ").pack()
-varClas = ("Energetica", "Azucarada", "Agua","Alcoholica","Soda")
-combo = ttk.Combobox(alta, values=varClas)
-combo.pack()
+values = ("Energetica", "Azucarada", "Agua","Alcoholica","Soda")
+varClas= ttk.Combobox(alta, values=values)
+varClas.pack()
 
 varmar= tk.StringVar()
 iblmar= Label(alta, text="Marca: ").pack()
 txtmar= Entry(alta, textvariable=varmar).pack()
 
-varPre= tk.StringVar()
+varPre= tk.DoubleVar()
 iblPre= Label(alta, text="Precio: ").pack()
 txtPre= Entry(alta, textvariable=varPre).pack()
 
-btnGuardar= Button(alta, text="Registrar Bebida").pack()
+btnGuardar= Button(alta, text="Registrar Bebida", command=ejecutaInsert).pack()
 
 # Baja de Bebidas -------------------------------------------------------------
 titulo = Label(baja, text = "Baja de Bebidas", fg = "red", font = ("Arial", 18)).pack()
