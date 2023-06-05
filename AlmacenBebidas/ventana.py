@@ -32,7 +32,7 @@ def cambiar_ventana():
     otras_op = tk.Toplevel()
     # Ventana 2 ---------------------------------------------------------------
     otras_op.title("Almacén Bebidas (Operaciones)")
-    otras_op.geometry("750x320")
+    otras_op.geometry("750x520")
     panel2=ttk.Notebook(otras_op)
     panel2.pack(fill="both",expand="yes")
     
@@ -40,12 +40,52 @@ def cambiar_ventana():
     CantidadMarca=ttk.Frame(panel2)
     CantidadClasi=ttk.Frame(panel2)
     volver=ttk.Frame(panel2)
+    
+    # 4 Buscar marca -------------------------------------------------------------------------
+    def Buscarmarca():
+        rsBebida = controlador.consultamarca(Marca.get())
+        num_filas = len(rsBebida) # Contar el número de tuplas devueltas por la consulta
+        tablam.delete(*tablam.get_children())
+        for user in rsBebida:
+            tablam.insert("", tk.END, text="", values=user)
+        txtcant.insert("0.0",num_filas) # Mostrar el número de elementos en la tabla
+            
     # Calcular precio ---------------------------------------------------------
     titulo5 = Label(CalcularPrecio, text = "Calcular Precio promedio de bebidas", fg = "green", font = ("Arial", 18)).pack()
     
     # Cantidad por Marca ------------------------------------------------------
     titulo6= Label(CantidadMarca, text = "Cantidad de bebidas de una Marca", fg = "blue", font = ("Arial", 18)).pack()
     
+    Marca= tk.StringVar()
+    marcan= Label(CantidadMarca, text="Marca de Bebida: ")
+    marcan.pack()
+    txtmarcas= Entry(CantidadMarca, textvariable=Marca)
+    txtmarcas.pack()
+    
+    btnBuscarmarca = Button(CantidadMarca, text = "Buscar",command=Buscarmarca)
+    btnBuscarmarca.pack()
+    
+    columns = ("id", "nombre", "clasificacion", "marca", "precio")
+    tablam = ttk.Treeview(CantidadMarca, columns = columns, show = "headings")
+
+    tablam.column("id", anchor=tk.W, width=30)
+    tablam.column("nombre", anchor=tk.W, width=130)
+    tablam.column("clasificacion", anchor=tk.W, width=130)
+    tablam.column("marca", anchor=tk.W, width=130)
+    tablam.column("precio", anchor=tk.W, width=180)
+
+    tablam.heading("id", text = "ID", )
+    tablam.heading("nombre", text = "NOMBRE")
+    tablam.heading("clasificacion", text = "CLASIFICACIÓN")
+    tablam.heading("marca", text = "MARCA")
+    tablam.heading("precio", text = "PRECIO")
+
+    tablam.pack()
+    
+    cantidamarca= Label(CantidadMarca, text = "Cantidad", fg = "blue", font = ("Arial", 12))
+    cantidamarca.pack()
+    txtcant = tk.Text(CantidadMarca, height = 2, width = 52)
+    txtcant.pack()
     # Cantidad por Clasificación ----------------------------------------------
     titulo7= Label(CantidadClasi, text = "Cantidad por clasificación", fg = "red", font = ("Arial", 18)).pack()
     
@@ -63,7 +103,43 @@ def cambiar_ventana():
    # 2. Guardar Bebida -----------------------------------------------------------------------
 def ejecutaInsert():
     controlador.guardarBebida(varBe.get(),varClas.get(),varmar.get(), varPre.get())
+    
+# 4 Buscar Bebida -------------------------------------------------------------------------
+def BuscarBebida():
+    rsBebida = controlador.consultaBebida(Nomb.get())
+        
+    for usu in rsBebida:
+        cadena = str(usu[0])+" "+ usu[1]+" "+ usu[2]+" "+usu[3]+" "+str(usu[4]) 
+        
+    if (rsBebida):
+        txtbeb.insert("0.0",cadena)
+    else:
+        messagebox.showinfo("No encontrado", "Bebida no registrada en la BD")
 
+# 5. Eliminar Bebida ----------------------------------------------------------------------
+def ejecutaEliminar():
+    sel = messagebox.askyesno("Eliminar Bebida", "Seguro que desea eliminar la Bebida?")
+    if (sel == True):
+        
+        try:
+            controlador.eliminarbebida(Nomb.get())
+        except sqlite3.OperationalError:
+            print("Error Consulta")
+            
+# 6. Consulta Bebidas --------------------------------------------------------------------
+def ConsultarRegistros():
+    Registrados = controlador.consultarBebidas()
+    tabla.delete(*tabla.get_children())
+    for user in Registrados:
+        tabla.insert("", tk.END, text = "", values = user)
+
+# 7 Actualizar Bebidas -------------------------------------------------------------------
+def ejecutaModificar():
+    rsUsuario = controlador.consultaBebidaid(varid.get())
+    if(rsUsuario):
+        controlador.modificarRegistro(varid.get(), varNombre.get(), varClasi.get(), varMarca.get(), varPrecio.get())
+    else:
+        messagebox.showinfo("No encontrado", "Usuario no registardo en la BD")
 # Alta de Bebidas -------------------------------------------------------------
 titulo= Label(alta,text="Alta de Bebidas", fg="Blue", font=("Arial",18)).pack()
 
@@ -89,40 +165,42 @@ btnGuardar= Button(alta, text="Registrar Bebida", command=ejecutaInsert).pack()
 
 # Baja de Bebidas -------------------------------------------------------------
 titulo = Label(baja, text = "Baja de Bebidas", fg = "red", font = ("Arial", 18)).pack()
- 
-ID= tk.StringVar()
-lblID= Label(baja, text = "Nombre de la bebida: ").pack()
-txtID= Entry(baja, textvariable = ID).pack()
 
-btnBuscar = Button(baja, text = "Buscar").pack()
+Nomb= tk.StringVar()
+iblnomb= Label(baja, text="Nombre Bebida: ").pack()
+txtnomb= Entry(baja, textvariable=Nomb).pack()
 
-usuarioRe = Label(baja, text = "Bebida Registrada:", fg = "blue", font = ("Arial", 18)).pack()
-txtusu = tk.Text(baja, height = 2, width = 52)
-txtusu.pack()
+btnBuscar = Button(baja, text = "Buscar",command=BuscarBebida)
+btnBuscar.pack()
 
-btnBusqueda = Button(baja, text = "Eliminar").pack()
+bebidaRe = Label(baja, text = "Bebida Registrada:", fg = "blue", font = ("Arial", 18)).pack()
+txtbeb = tk.Text(baja, height = 2, width = 52)
+txtbeb.pack()
+
+btnBusqueda = tk.Button(baja, text = "Eliminar", command=ejecutaEliminar)
+btnBusqueda.pack()
 
 # Consulta de Bebidas ---------------------------------------------------------
 titulo3 = Label(consulta, text = "Consulta de bebidas", fg = "red", font = ("Arial", 18)).pack()
 
-columns = ("id", "nombre", "correo", "marca", "contra")
+columns = ("id", "nombre", "clasificacion", "marca", "precio")
 tabla = ttk.Treeview(consulta, columns = columns, show = "headings")
 
-tabla.column("id", anchor=tk.W, width=50)
-tabla.column("nombre", anchor=tk.W, width=150)
-tabla.column("correo", anchor=tk.W, width=150)
-tabla.column("marca", anchor=tk.W, width=150)
-tabla.column("contra", anchor=tk.W, width=200)
+tabla.column("id", anchor=tk.W, width=30)
+tabla.column("nombre", anchor=tk.W, width=130)
+tabla.column("clasificacion", anchor=tk.W, width=130)
+tabla.column("marca", anchor=tk.W, width=130)
+tabla.column("precio", anchor=tk.W, width=180)
 
 tabla.heading("id", text = "ID", )
 tabla.heading("nombre", text = "NOMBRE")
-tabla.heading("correo", text = "CLASIFICACIÓN")
+tabla.heading("clasificacion", text = "CLASIFICACIÓN")
 tabla.heading("marca", text = "MARCA")
-tabla.heading("contra", text = "PRECIO")
+tabla.heading("precio", text = "PRECIO")
 
 tabla.pack()
 
-btnConsulta = Button(consulta, text = "Registros").pack()
+btnConsulta = Button(consulta, text = "Registros", command=ConsultarRegistros).pack()
 
 # Actualizar Bebidas ----------------------------------------------------------
 titulo4 = Label(actualizar, text = "Actualizar Bebidas", fg = "green", font = ("Arial", 18)).pack()
@@ -135,19 +213,20 @@ varNombre= tk.StringVar()
 lblNombre = Label(actualizar, text = "Nombre Bebida (nuevo): ").pack()
 txtNombre = Entry(actualizar, textvariable = varNombre).pack()
 
-varClasi= tk.StringVar()
-lblClasi= Label(actualizar, text = "Clasificación (nueva): ").pack()
-txtClasi = Entry(actualizar, textvariable = varClasi).pack()
+iblmClasi= Label(actualizar, text= "Clasificación (nueva): ").pack()
+values2 = ("Energetica", "Azucarada", "Agua","Alcoholica","Soda")
+varClasi= ttk.Combobox(actualizar, values=values2)
+varClasi.pack()
 
 varMarca= tk.StringVar()
 lblMarca = Label(actualizar, text = "Marca (nueva): ").pack()
 txtMarca = Entry(actualizar, textvariable = varMarca).pack()
 
-varPrecio= tk.StringVar()
+varPrecio= tk.DoubleVar()
 lblPrecio = Label(actualizar, text = "Precio (nuevo): ").pack()
-txtPrecio = Entry(actualizar, textvariable = varPrecio).pack()
+txtPrecio = Entry(actualizar,textvariable = varPrecio).pack()
 
-btnmodificar= Button(actualizar, text = "Actualizar").pack()
+btnmodificar= Button(actualizar, text = "Actualizar", command=ejecutaModificar).pack()
 
 
 # Otras Opciones --------------------------------------------------------------
