@@ -46,6 +46,7 @@ def cambiar_ventana():
         rsBebida = controlador.consultamarca(Marca.get())
         num_filas = len(rsBebida) # Contar el número de tuplas devueltas por la consulta
         tablam.delete(*tablam.get_children())
+        txtcant.delete("1.0","end")
         for user in rsBebida:
             tablam.insert("", tk.END, text="", values=user)
         txtcant.insert("0.0",num_filas) # Mostrar el número de elementos en la tabla
@@ -55,6 +56,7 @@ def cambiar_ventana():
         rsBebida = controlador.consultaclasificacion(varClasifi.get())
         num_filas = len(rsBebida) # Contar el número de tuplas devueltas por la consulta
         tablac.delete(*tablac.get_children())
+        txtclasi.delete("1.0","end")
         for user in rsBebida:
             tablac.insert("", tk.END, text="", values=user)
         txtclasi.insert("0.0",num_filas) # Mostrar el número de elementos en la tabla
