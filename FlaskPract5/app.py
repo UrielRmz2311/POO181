@@ -1,5 +1,5 @@
 # Importacion de framework -------------------------------------------
-from flask import Flask,render_template, request
+from flask import Flask,render_template,request,redirect,url_for,flash
 # Importacion de MySQL con FLASK
 from flask_mysqldb import MySQL
 
@@ -11,6 +11,7 @@ app.config['MYSQL_HOST']='localhost'
 app.config['MYSQL_USER']='root' # Usuario de MySQL 
 app.config['MYSQL_PASSWORD']=''  # Contraseña MySQL
 app.config['MYSQL_DB']='dbflask'  # Nombre de la base de datos
+app.secret_key='mysecretkey'
 mysql= MySQL(app)
 
 # Declaración de las rutas hhtp://localhost:5000 ---------------------
@@ -24,11 +25,18 @@ def index():
 @app.route('/guardar', methods=['POST'] )
 def guardar():
     if request.method == 'POST':
-        titulo= request.form['txtTitulo']
-        artista= request.form['txtArtista']
-        anio= request.form['txtAnio']
-        print(titulo,artista,anio)
-    return "Los datos llegaron Amigo ;"
+    #Pasamos a variables el contenido de los input
+        Vtitulo= request.form['txtTitulo']
+        Vartista= request.form['txtArtista']
+        Vanio= request.form['txtAnio']
+        print(Vtitulo,Vartista,Vanio)
+        
+        #Conectar y ejecutar el insert
+        CS = mysql.connection.cursor()
+        CS.execute('insert into albums(titulo,artista,anio) values (%s,%s,%s)',(Vtitulo,Vartista,Vanio))
+        mysql.connection.commit()
+    flash('El album fue agregado correctamente')
+    return redirect(url_for('index'))
 
 @app.route('/eliminar')
 def eliminar():
