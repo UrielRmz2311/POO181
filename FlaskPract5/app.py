@@ -23,7 +23,7 @@ def index():
     CC.execute('select * from albums')
     conAlbums= CC.fetchall()
     print(conAlbums)
-    return render_template('index.htm', listalbums=conAlbums)
+    return render_template('index.html', listalbums=conAlbums)
 
 # ruta http:localhost:500/guardar tipo POST para Insert
 @app.route('/guardar', methods=['POST'] )
