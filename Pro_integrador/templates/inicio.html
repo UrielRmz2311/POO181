@@ -6,36 +6,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="shortcut icon" href="https://calareo.ca/wp-content/uploads/2020/10/UPQ-logo.png" type="image/x-icon">
     <title>Conocenos</title>
-    <link rel="stylesheet" href="CSS/style2.css">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style2.css')}}">
 </head>
 <body>
     <nav class="navbar navbar-light bg-light">
           <h1 class="letra">Conocenos</h1>
-        <div class="text-center">
-            <a class="btn btn-primary" href="../Pro_integrador/REGISTRO_ADMISION.html">Registrar Proc. Admisión</a>
-        </div>
+        <form>
+            <div class="text-center">
+                <input class="btn btn-primary" type="submit" formaction="/Registro-admision" value="Registrar Proc. Admisión">
+            </div>
+        </form>
         <br>
-        <div class="text-end">
-            <a class="btn btn-warning" href="..//Pro_integrador/index.html">Salir</a>
-        </div>
-      </div>
+        <form>
+            <div class="text-end">
+                <input class="btn btn-warning" type="submit" formaction="/" value="Salir">
+            </div>
+        </form>
       </nav>
      <br>
      <br>
 
     <div class="container">
-        <a href="../Pro_integrador/edificioa.html">
-            <div class="cuadro" style="background-image: url(../Pro_integrador/imagenes/edificioA.jpg);">
-                <span class="texto">Edificio A</span>
-            </div>
-        </a>
+        <form>
+            <a type"submit" formaction="/EdificioA">
+                <div class="cuadro" style="background-image: url(../Pro_integrador/static/imagenes/edificioA.jpg);">
+                    <span class="texto">Edificio A</span>
+                </div>
+            </a>
+        </form>
         <a href="../Pro_integrador/edificiob.html">
-            <div class="cuadro" style="background-image: url(../Pro_integrador/imagenes/edificioB.jpg);">
+            <div class="cuadro" style="background-image:{{url_for('static',filename='imagenes/edifcioB.jpg')}};">
                <span class="texto">Edificio B</span>
             </div>
          </a>
          <a href="../Pro_integrador/edificioc.html">
-            <div class="cuadro" style="background-image: url(../Pro_integrador/imagenes/edificioC.jpg);">
+            <div class="cuadro" style="background-image: url(../Pro_integrador/static/imagenes/edificioC.jpg);">
                <span class="texto">Edificio C</span>
             </div>
          </a>
