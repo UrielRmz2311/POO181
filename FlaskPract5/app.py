@@ -42,7 +42,7 @@ def guardar():
     flash('El album fue agregado correctamente')
     return redirect(url_for('index'))
 
-@app.route('/editar/<string:id>')
+@app.route('/editar/<id>')
 def editar(id):
     cursorId = mysql.connection.cursor()
     cursorId.execute('select * from albums where id= %s',(id,))
@@ -51,8 +51,18 @@ def editar(id):
 
 @app.route('/actualizar/<id>', methods=['POST'])
 def actualizar(id):
+    if request.method == 'POST':
+        #Pasamos a variables el contenido de los input
+        Vartitulo= request.form['txtTitulo']
+        Vartista= request.form['txtArtista']
+        Varanio= request.form['txtAnio']
     
-    return "Se elimino en la BD"
+        curAct = mysql.connection.cursor()
+        curAct.execute('update albums set titulo= %s, artista= %s, anio= %s where id= %s', (Vartitulo,Vartista,Varanio,id))
+        mysql.connection.commit()
+        
+    flash('El album se actualizo correctamente')
+    return redirect(url_for('index'))
 
 
 
