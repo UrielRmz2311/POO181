@@ -11,13 +11,25 @@
 <body>
     <nav class="navbar navbar-light bg-light">
         <div>
-            <a class="btn btn-warning" href="../Pro_integrador/inicio.html">Regresar</a>
+            <a class="btn btn-warning" href=/Conocenos>Regresar</a>
           </div>
         <div class="letra">
             <h1>La Kafe UPQ</h1>
         </div>
       </nav>
     
+      <div class="info">
+        <h2>Titulo del cuadro de información</h2>
+        <p>Aquí colocarías el contenido del cuadro grande de información.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus bibendum elit, non egestas dolor commodo non. Duis blandit libero vitae urna ullamcorper, non auctor dolor malesuada.</p> 
+      </div>
+      <!-- Código para imagenes deslizantes -->
+      <div class="imagenes">
+        <img src="{{ url_for('static', filename='EVista/cafe1.jpg') }}" width="100%" />
+        <img src="{{ url_for('static', filename='EVista/cafe2.png') }}" width="100%" />
+        <img src="{{ url_for('static', filename='EVista/cafe3.png') }}" width="100%"/>
+      </div>
+
 
 
 

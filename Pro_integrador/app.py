@@ -53,7 +53,7 @@ def cidea():
 def cafeteria():
     return render_template('cafeteria.html')
 
-@app.route('/LT1')
+@app.route('/LT')
 def lt1():
     return render_template('LT1.html')
 
