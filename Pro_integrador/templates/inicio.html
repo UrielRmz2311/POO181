@@ -9,15 +9,15 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/style2.css')}}">
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light" style="background-color: #7f0606;">
           <h1 class="letra">Conocenos</h1>
             <div class="text-center">
-                <a class="btn btn-primary" href=/Registro-admision> Registrar Proc. Admisión </a>
+                <a class="btn btn-primary" href=/proceso> Registrar Proceso de Admisión </a>
             </div>
         <br>
         <form>
             <div class="text-end">
-                <input class="btn btn-warning" type="submit" formaction="/" value="Salir">
+                <input class="btn btn-light" type="submit" formaction="/" value="Salir">
             </div>
         </form>
       </nav>
@@ -26,52 +26,52 @@
 
     <div class="container">
             <a href=/EdificioA>
-                <div class="cuadro" style="background-image: url({{ url_for('static', filename='imagenes/edificioA.jpg') }});">
+                <div class="cuadro" style="background-image: url({{ url_for('static', filename='imagenes/EdificioA/edificioA.jpg') }});">
                     <span class="texto">Edificio A</span>
                 </div>
             </a>
         <a href=/EdificioB>
-            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/edificioB.jpg') }});">
+            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/EdificioB/edificioB.jpg') }});">
                <span class="texto">Edificio B</span>
             </div>
          </a>
          <a href=/EdificioC>
-            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/edificioC.jpg') }});">
+            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/EdificioC/edificioC.jpg') }});">
                <span class="texto">Edificio C</span>
             </div>
          </a>
         <a href=/CIDEA>
-            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/cidea.jpg') }});">
+            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/Cidea/cidea.jpg') }});">
                 <span class="texto">CIDEA</span>
             </div>
         </a>
         <a href=/CAPTA>
-            <div class="cuadro" style="background-image: url({{ url_for('static', filename='imagenes/capta.jpg') }});">
+            <div class="cuadro" style="background-image: url({{ url_for('static', filename='imagenes/Capta/capta.jpg') }});">
                 <span class="texto">CAPTA</span>
             </div>
         </a>
         <a href=/LT>
-            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/edificioLT1.jpg') }});">
+            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/Lt1/edificioLT1.jpg') }});">
                <span class="texto">Edificio LT1</span>
             </div>
          </a>
         <a href=/Biblioteca>
-            <div class="cuadro" style="background-image: url({{ url_for('static', filename='imagenes/biblioteca.png') }});">
+            <div class="cuadro" style="background-image: url({{ url_for('static', filename='imagenes/Biblioteca/biblioteca.png') }});">
                 <span class="texto">Biblioteca</span>
             </div>
         </a>
         <a href=/LakafeUPQ>
-            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/cafeteria.jpg') }});">
+            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/Cafeteria/cafeteria.jpg') }});">
                 <span class="texto">La Kafe UPQ</span>
             </div>
         </a>
         <a href=/Talleres>
-            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/edificioT.jpg') }});">
+            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/Talleres/edificioT.jpg') }});">
                <span class="texto">Edificio Talleres</span>
             </div>
          </a>
          <a href=/Canchas>
-            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/canchas.png') }});">
+            <div class="cuadro" style="background-image:url({{ url_for('static', filename='imagenes/Canchas/canchas.png') }});">
                <span class="texto">Canchas</span>
             </div>
          </a>

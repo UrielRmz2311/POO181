@@ -19,20 +19,29 @@
         <div class="imagen-formulario">
 
         </div>
-        
-    <form class="formulario" action="/Conocenos" method="GET">
+
+    <form class="formulario" action="/registrar" method="POST">
         <div class="texto-formulario">
             <h2>Bienvenido</h2>
             <p>Registra tu acceso UPQ</p>
+        <br>
+        {% with mensajes= get_flashed_messages()%}
+            {%if mensajes%}
+                {%for msj in mensajes%}
+                <h3> {{msj}} </h3>
+                {% endfor %}
+            {% endif %}
+        {% endwith%}
+        <br>
         </div>
         <div class="input">
             <label for="Nombre">Nombre completo</label>
-            <input placeholder="Ingresa nombre" type="text" name="">
+            <input placeholder="Ingresa nombre" type="text" name="txtnombre">
         </div>
         <div class="input">
-            <label for="Correo">Correo electronico:</label>
-            <input placeholder="Ingresa tu correo" name="">
-        </div>
+            <label for="Correo">Correo electrónico:</label>
+            <input type="email" placeholder="Ingresa tu correo" name="txtcorreo">
+          </div>
         <br>
         <div class="text-center">
             <input class="btn btn-primary" type="submit" value="Entrar">
