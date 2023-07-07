@@ -59,7 +59,7 @@ def actualizar(id):
         curAct.execute('update tbfrutas set fruta= %s, temporada= %s, precio= %s, stock= %s where id= %s', (Varfruta,Vartempo,Varprecio,Varstock,id))
         mysql.connection.commit()
         
-    flash('El album se actualizo correctamente')
+    flash('La fruta se actualizo correctamente')
     return redirect(url_for('consulta'))
 
 @app.route('/eliminar/<id>')

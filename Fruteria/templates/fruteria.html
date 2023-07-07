@@ -11,7 +11,7 @@
     <a class="btn" href=/Consulta>Consultar Inventario</a>
     <form action="/guardar" method="POST">
     <br>
-        {% with mensajes= get_flashed_messages()%}
+    {% with mensajes= get_flashed_messages()%}
         {%if mensajes%}
             {%for msj in mensajes%}
             <h3> {{msj}} </h3>
@@ -20,9 +20,9 @@
     {% endwith%}
     <br>
         <label for="fruta">Fruta:</label>
-        <input type="text" id="fruta" name="txtfruta"><br>
+        <input type="text" id="fruta" name="txtfruta" required><br>
       <label for="temporada">Temporada:</label>
-      <select type="text" name="txttemporada">
+      <select type="text" name="txttemporada" required>
       <option value="primavera">Primavera</option>
       <option value="verano">Verano</option>
       <option value="otoño">Otoño</option>
@@ -30,10 +30,10 @@
       </select><br>
       
       <label for="precio">Precio:</label>
-      <input type="floatformat" name="txtprecio"><br>
+      <input type="floatformat" name="txtprecio" required><br>
       
       <label for="stock">Stock:</label>
-      <input type="number" name="txtstock"><br>
+      <input type="number" name="txtstock" required><br>
       
       <button type="submit">Enviar</button>
       
