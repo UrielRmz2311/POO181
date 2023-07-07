@@ -6,12 +6,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="shortcut icon" href="https://calareo.ca/wp-content/uploads/2020/10/UPQ-logo.png" type="image/x-icon">
     <title>CIDEA</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='css/style7.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style1.css')}}">
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light" style="background-color: #7f0606;">
         <div>
-            <a class="btn btn-warning" href=/Conocenos>Regresar</a>
+            <a class="btn btn-light" href=/Conocenos>Regresar</a>
           </div>
         <div class="letra">
             <h1>CIDEA</h1>
@@ -19,18 +19,70 @@
       </nav>
     
       <div class="info">
-        <h2>Titulo del cuadro de información</h2>
-        <p>Aquí colocarías el contenido del cuadro grande de información.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec faucibus bibendum elit, non egestas dolor commodo non. Duis blandit libero vitae urna ullamcorper, non auctor dolor malesuada.</p> 
+        <h2>CIDEA</h2>
+        <p>Un edificio muy innovador ya que en este se despliegan las mejores ideas</p>
+        <p>
+          Áreas en planta baja:
+          Oficinas Administrativas del Programa Educativo de Ingeniería en
+          Tecnología Automotriz, Oficinas administrativas de Talleres y
+          Laboratorios Pesados, Oficina Brose.
+        </p>
+        <p>
+          Áreas en planta alta:
+          Oficinas Administrativas de la Dirección de Investigación y 
+          Posgrado, Dirección de Planeación, Órgano Interno de Control.
+        </p>
+        <p> 
+          Espacios en planta baja:
+          Laboratorio de manufactura aditiva e ingeniería inversa, 4 aulas
+          para la impartición de clases, sanitarios para hombres y mujeres, y un sanitario para hombres 
+          y uno para mujeres adecuado para personas con discapacidad.
+        <p>
+          Espacios en planta alta:
+          Sala de juntas de CIDEA, Sala de acuerdos CIDEA.
+        </p>
       </div>
-      <!-- Código para imagenes deslizantes -->
+
       <div class="imagenes">
-        <img src="{{ url_for('static', filename='EVista/SALA_CIDEA3.jpg') }}" width="100%" />
-        <img src="{{ url_for('static', filename='imagenes/edificioB.jpg') }}" width="100%" />
-        <img src="{{ url_for('static', filename='imagenes/edificioLT1.jpg') }}" width="100%"/>
+        <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/cidea1.jpg') }}" class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/1.jpg') }}"  class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/2.jpg') }}"  class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/SALA_CIDEA3.jpg') }}"  class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/3.jpg') }}"  class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/4.jpg') }}"  class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/5.jpg') }}"  class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/6.jpg') }}"  class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='imagenes/Cidea/7.jpg') }}"  class="d-block w-100">
+            </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Atrás</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
       </div>
-
-
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
