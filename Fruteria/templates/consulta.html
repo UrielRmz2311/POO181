@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Frutas</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style2.css')}}">
+</head>
+<body>
+    <h1>Consulta de inventario</h1>
+    <br>
+    <br>
+    <form action=/>
+        <button href=> Regresar </button> 
+    </form>
+    <form action=/Consult>
+        <button href=> Consultar por nombre </button> 
+    </form>
+    <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fruta</th>
+            <th>Temporada</th>
+            <th>Precio</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for fru in listafruta%}
+                <tr>
+                    <td>{{fru.0}}</td>
+                    <td>{{fru.1}}</td>
+                    <td>{{fru.2}}</td>
+                    <td>{{fru.3}}</td>
+                    <td>{{fru.4}}</td>
+                    <td>
+                        <a href=/editar/{{fru.0}} > Editar</a>
+                        <a href=/eliminar/{{fru.0}}> Borrar</a>
+                    </td>
+                </tr>
+            {%endfor%}
+        </tbody>
+      </table>
+</body>
+</html>

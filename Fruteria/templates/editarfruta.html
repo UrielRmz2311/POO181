@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar fruta</title>
+</head>
+<body>
+    <h1>Fruta a actualizar: </h1>
+    <br>
+    <br>
+
+    <form action="/actualizar/{{fruta.0}}" method="POST">
+        
+        <input type="text" name="txtfruta" value={{fruta.1}}>
+        <select type="text" name="txttemporada" value={{fruta.2}}>
+            <option value="primavera">Primavera</option>
+            <option value="verano">Verano</option>
+            <option value="otoño">Otoño</option>
+            <option value="invierno">Invierno</option>
+        </select>
+        <input type="number" name="txtprecio" value={{fruta.3}}>
+        <input type="number" name="txtstock" value={{fruta.4}}>
+
+        <button type="submit">Actualizar</button>
+
+    </form>
+    <form action=/Consulta>
+    <button href=> Cancelar </button> 
+    </form>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar Fruta</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+</head>
+<body>
+    <h1>Registro de Fruta</h1>
+    <br>
+    <a class="btn" href=/Consulta>Consultar Inventario</a>
+    <form action="/guardar" method="POST">
+    <br>
+        {% with mensajes= get_flashed_messages()%}
+        {%if mensajes%}
+            {%for msj in mensajes%}
+            <h3> {{msj}} </h3>
+            {% endfor %}
+        {% endif %}
+    {% endwith%}
+    <br>
+        <label for="fruta">Fruta:</label>
+        <input type="text" id="fruta" name="txtfruta"><br>
+      <label for="temporada">Temporada:</label>
+      <select type="text" name="txttemporada">
+      <option value="primavera">Primavera</option>
+      <option value="verano">Verano</option>
+      <option value="otoño">Otoño</option>
+      <option value="invierno">Invierno</option>
+      </select><br>
+      
+      <label for="precio">Precio:</label>
+      <input type="floatformat" name="txtprecio"><br>
+      
+      <label for="stock">Stock:</label>
+      <input type="number" name="txtstock"><br>
+      
+      <button type="submit">Enviar</button>
+      
+      </form>
+</body>
+</html>
