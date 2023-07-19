@@ -100,7 +100,7 @@ def consultanombre():
     CC.execute('select * from tbfrutas where fruta LIKE %s', (f'%{Varbuscar}%',))
     confruta= CC.fetchall()
     print(confruta)
-    return render_template('consultan.html', listafruta = confruta)
+    return render_template('consulta.html', listafruta = confruta)
 
 
 # Ejecución de Servidor en el Puerto 5100 ---------------------------- 
