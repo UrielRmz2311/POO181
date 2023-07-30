@@ -1,5 +1,5 @@
 body {
-    background-image: url("../imagenes/fond.png");
+    background-image: url("../imagenes/registro.png");
     background-position: center;
     background-repeat:no-repeat;
     background-attachment:fixed;
@@ -7,24 +7,22 @@ body {
     background-color:cornflowerblue;
 }
 
-.letra {
-    color: rgb(225, 225, 225);
-    padding:20 px;
-    font-size: 30px;
-    text-align: center;
-}
-.info {
-    float: absolute;
-    width: 100%;
-    padding: 10px;
-    background-color: #250e80;
-    background-position: center;
-    color: white;
-  }
-  
   .imagenes {
-    float: none;
-    width: 66%;
+    width: 50%; 
     padding: 10px;
-    margin: auto; /* agregar esta línea */
-  }
+    background-size: cover;
+    float:left; 
+    }
+
+  .video {
+    width: 30%; 
+    padding: 5px;
+    float:right; 
+    }
+
+.letra {
+  color: rgb(225, 225, 225);
+  padding:20 px;
+  font-size: 30px;
+  text-align: center;
+}  
