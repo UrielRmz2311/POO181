@@ -35,12 +35,16 @@ def guardar():
         Vanio= request.form['txtAnio']
         print(Vtitulo,Vartista,Vanio)
         
-        #Conectar y ejecutar el insert
-        CS = mysql.connection.cursor()
-        CS.execute('insert into albums(titulo,artista,anio) values (%s,%s,%s)',(Vtitulo,Vartista,Vanio))
-        mysql.connection.commit()
-    flash('El album fue agregado correctamente')
-    return redirect(url_for('index'))
+        if Vtitulo == "" or Vartista== "" or Vanio == "":
+            flash('No puedes enviar campos vacios')
+            return redirect(url_for('index'))
+        else:
+            #Conectar y ejecutar el insert
+            CS = mysql.connection.cursor()
+            CS.execute('insert into albums(titulo,artista,anio) values (%s,%s,%s)',(Vtitulo,Vartista,Vanio))
+            mysql.connection.commit()
+            flash('El album fue agregado correctamente')
+            return redirect(url_for('index'))
 
 @app.route('/editar/<id>')
 def editar(id):
