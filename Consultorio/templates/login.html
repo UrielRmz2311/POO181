@@ -9,9 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="CSS/estilos2.css">
-    <link rel="stylesheet" href="CSS/estilos.css">
-    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/estilos.css')}}">
+
 </head>
 <body>
 
@@ -24,7 +23,7 @@
     <form class="formulario" method="POST">
         <div class="texto-formulario">
             <h2>Bienvenido</h2>
-            <p>Inicia sesion</p>
+            <p>Inicia sesión</p>
         </div>
         <div class="input">
             <label for="RFC">RFC de Médico</label>
