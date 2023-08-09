@@ -90,7 +90,6 @@ def registrar():
             CS = mysql.connection.cursor()
             CS.execute('insert into registro(nombre,correo) values (%s,%s)',(Vnombre,Vcorreo))
             mysql.connection.commit()
-            flash('Tu registro se registró correctamente')
             return redirect(url_for('inicio')) 
 
 # ruta http:localhost:500/guardar tipo POST para Insert

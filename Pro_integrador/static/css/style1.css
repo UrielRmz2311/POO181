@@ -13,7 +13,14 @@ body {
     background-size: cover;
     float:left; 
     }
-
+    
+  .imageness {
+    width: 70%;
+    padding: 10px;
+    background-size: cover;
+    margin: 0 auto; /* Agregado para centrar horizontalmente */
+    display: block; /* Agregado para centrar horizontalmente */
+  }
   .video {
     width: 30%; 
     padding: 5px;
