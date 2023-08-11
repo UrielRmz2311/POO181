@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for,flash
+from flask import Flask, render_template, request, redirect, url_for,flash,session
 from flask_mysqldb import MySQL
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, login_user,logout_user,login_required
 
 app = Flask(__name__)
 
@@ -11,6 +12,7 @@ app.config['MYSQL_DB']='bdconsultorio'
 app.secret_key = 'mysecretkey'
 mysql = MySQL(app)
 
+
 @app.route('/')
 def login():
     return render_template('login.html') 
@@ -18,19 +20,53 @@ def login():
 @app.route('/iniciosesion', methods=['GET','POST'])
 def iniciosesion():
     if request.method == 'POST':
-        print(request.form['txtusuario'])
-        print(request.form['txtpass'])
-        return render_template('inicio.html')
-    else:
-        return render_template('login.html')
+        rfc = request.form['txtusuario']
+        contraseña = request.form['txtpass']
+        if rfc == "" or contraseña == "":
+            flash('No se pueden enviar campos vacios')
+            return render_template('login.html')
+        else:
+            CS = mysql.connection.cursor()
+            # Consulta para verificar las credenciales del usuario
+            consulta = "SELECT * FROM medicos WHERE rfc = %s"
+            CS.execute(consulta,(rfc,))
+            usuario = CS.fetchone()
+            mysql.connection.commit()
+            # Iniciar sesión exitosa
+            # Aquí puedes establecer una sesión o tomar otras medidas según tus necesidades
+            if usuario:
+                row = usuario[6]
+                rol = usuario[7]
+                if check_password_hash(row,contraseña):
+                    session['rol'] = rol  # Almacena el rol en la sesión
+                    return redirect(url_for('inicio'))
+                else:
+                    flash('Credenciales incorrectas, favor de reintentar...')
+                    return render_template('login.html')
+            else:
+                flash('RFC ingresado no existe...')
+                return render_template('login.html')
+
+@app.route('/Cerrarsesion')
+def cerrarsesion():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route('/ConsultorioMedico')
 def inicio():
     return render_template('inicio.html')
 
+# ---------------------------  Opciones administrador ---------------------------------------
 @app.route('/RegistroMedico')
 def interfazM():
-    return render_template('formmedico.html')
+    if session:
+        rol = session.get('rol')  # Obtiene el rol de la sesión
+        if rol == 1:
+            return render_template('formmedico.html')
+        else:
+            return render_template('inicio.html')
+    else:
+        return render_template('login.html')
 
 @app.route('/RegistrarMedico', methods=['POST'])
 def registrarM():
@@ -39,19 +75,22 @@ def registrarM():
         Vapellido= request.form['txtApellido']
         Vcedula= request.form['txtcedula']
         Vrfc= request.form['txtrfc']
+        Vcorreo= request.form['txtcorreo']
         Vcontrasena= request.form['txtpass']
         Vpass= request.form['txtpassw']
         Vrol= request.form['txtrol']
         #print(Vnombre,Vapellido,Vcedula,Vrfc,Vcontrasena,Vpass,Vrol)
 
-        if Vnombre == "" or Vapellido == "" or Vcedula == "" or Vrfc == "" or Vapellido == "" or Vcontrasena == "" or Vpass == "" or Vrol == "":
+        if Vnombre == "" or Vapellido == "" or Vcedula == "" or Vrfc == "" or Vapellido == "" or Vcontrasena == "" or Vpass == "" or Vrol == "Elegir...":
             flash('No se pueden guardar campos vacios')
             return render_template('formmedico.html')
         else:
             if Vcontrasena == Vpass:
+                Encrippass = generate_password_hash(Vcontrasena, 'pbkdf2:sha256')
+                print(check_password_hash(Encrippass,Vcontrasena))
                 #Conectar y ejecutar el insert
                 CS = mysql.connection.cursor()
-                CS.execute('insert into medicos(rfc,nombre,apellidos,cedula,correo,contraseña,rol) values (%s,%s,%s,%s,%s,%s,%s)',(Vtitulo,Vartista,Vanio))
+                CS.execute('insert into medicos(rfc,nombre,apellidos,cedula,correo,contraseña,rol) values (%s,%s,%s,%s,%s,%s,%s)',(Vrfc,Vnombre,Vapellido,Vcedula,Vcorreo,Encrippass,Vrol))
                 mysql.connection.commit()
                 flash('El médico se guardo correctamente')
                 return render_template('formmedico.html')
@@ -60,9 +99,27 @@ def registrarM():
                 return render_template('formmedico.html')
 
 
-@app.route('/EdificioB')
-def edificioB():
-    return render_template('edificiob.html')
+@app.route('/ConsultarMedico')
+def consulta():
+    rol = session.get('rol')  # Obtiene el rol de la sesión
+    if rol == 1:
+        CC= mysql.connection.cursor()
+        CC.execute('select * from medicos')
+        medicos= CC.fetchall()
+        return render_template('cmedico.html', listamedico = medicos)
+    else:
+        return render_template('inicio.html')
+
+
+@app.route('/Consultanombre', methods=['POST'])
+def consultanombre():
+    Varbuscar= request.form['txtbuscar']
+    CC= mysql.connection.cursor()
+    CC.execute('select * from medicos where nombre LIKE %s', (f'%{Varbuscar}%',))
+    medicos= CC.fetchall()
+    return render_template('cmedico.html', listamedico = medicos)
+
+#---------------------------------------------------------------------------------------------------------
 
 @app.route('/EdificioC')
 def edificioC():

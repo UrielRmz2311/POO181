@@ -1,59 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>Consulta de Médico</title>
-    <link rel="stylesheet" href="css/estilos6.css" />
-</head>
-<body>
-           
-    <nav class="navbar navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="../POO181/inicio.html">
-            <img  src="../POO181/imagenes/logo1.png" alt="" width="35" height="35" class="d-inline-block align-text-top">
-                CONSULTORIO MÉDICO
-          </a>
-          <ul class="nav justify-content-center">
-            <a class="navbar-brand">
-          <img  src="../POO181/imagenes/reloj.png" alt="" width="40" height="40">
-      </a>
-          <div class="reloj justify-content-end">
-          <h1 id="tiempo">00 : 00 : 00</h1>
-          </div>
-      </ul>
-      </div>
-      </nav>
-        <br>
+{% extends 'plantilla.html' %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/estilos6.css')}}">
+{% endblock %}
+
+{% block body %}
        <div class="container">
         <div>
-            <a class="btn btn-warning" href="../POO181/formmedico.html">Registrar Médico</a>
-          </div>
-            
-        <br>
+            <a class="btn btn-warning" href=/ConsultorioMedico>  <i class="bi bi-arrow-return-left"></i>  Regresar Inicio</a>
+        </div>
+        <div>
+            <a class="btn btn-warning" href=/RegistroMedico>Registrar Médico  <i class="bi bi-arrow-return-right"></i></a>
+        </div>
+        <form action=/Consultanombre method="POST">
+            <input type="text" name="txtbuscar" placeholder="Buscar por Nombre..." required>
+            <button class="btn btn-warning" type="submit">Buscar</button>
+        </form>
+
+        <div>
+            <a type="button "class="btn btn-primary" href=/ConsultarMedico> Todos los registros </a> 
+        <div>
     <table class="table table-light table-hover table_id">
     <thead>
         <tr>
-        <th scope="col">ID.</th>
-            <th scope="col">Nombre</th>
             <th scope="col">Cedula</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
             <th scope="col">RFC</th>
             <th scope="col">Correo electronico</th>
             <th scope="col">ROL</th>
             <th scope="col">
-            <img  src="../POO181/imagenes/actualizar.png" alt="" width="40" height="40">
+            <img  src="{{ url_for('static', filename='/imagenes/actualizar.png') }}" alt="" width="40" height="40">
             </th>
             <th scope="col">
-            <img  src="../POO181/imagenes/eliminar.png" alt="" width="40" height="40">
+            <img  src="{{ url_for('static', filename='/imagenes/eliminar.png') }}" alt="" width="40" height="40">
             </th>
-    
         </tr>
         </thead>
+        <tbody>
+            {% for med in listamedico%}
+                <tr>
+                    <td>{{med.4}}</td>
+                    <td>{{med.2}}</td>
+                    <td>{{med.3}}</td>
+                    <td>{{med.1}}</td>
+                    <td>{{med.5}}</td>
+                    <td>{{med.7}}</td>
+                    <td>
+                        <a class="btn btn-warning" href=/editar/{{med.0}}><i class="bi bi-pencil-square"></i> Editar</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-danger" href=/eliminar/{{med.0}}><i class="bi bi-trash-fill"></i> Borrar</a>
+                    </td>
+                </tr>
+            {%endfor%}
+        </tbody>
     </table>
-
-    <script src="js/script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}

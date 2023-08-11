@@ -8,7 +8,10 @@
       <br>
     <div class="container">
           <div>
-              <a class="btn btn-warning" href=/ConsultorioMedico>Regresar</a>
+              <a class="btn btn-warning" href=/ConsultorioMedico> <i class="bi bi-arrow-return-left"></i>Regresar Inicio</a>
+          </div>
+          <div>
+            <a class="btn btn-warning" href=/ConsultarMedico>Consultar Médico   <i class="bi bi-arrow-return-right"></i></a>
           </div>
 
           <form action="/RegistrarMedico" method="POST">
@@ -20,6 +23,12 @@
                         <strong> {{msj}} </strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
+                    <script>Swal.fire(
+                      'Usuario Guardado!!',
+                      'Verifica en interfaz Consulta de Médico!!',
+                      'Creado'
+                    )
+                  </script>
                   {% endfor %}
                {% endif %}
             {% endwith%}

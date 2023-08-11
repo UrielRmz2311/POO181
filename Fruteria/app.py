@@ -99,7 +99,6 @@ def consultanombre():
     CC= mysql.connection.cursor()
     CC.execute('select * from tbfrutas where fruta LIKE %s', (f'%{Varbuscar}%',))
     confruta= CC.fetchall()
-    print(confruta)
     return render_template('consulta.html', listafruta = confruta)
 
 
