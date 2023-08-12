@@ -42,7 +42,7 @@ def load_user(id):
     CS.execute('Select id, rfc, contraseña from medicos where id =%s', (id,))
     usuario = CS.fetchone()
     if usuario:
-        print("Método: load_user(id), el usuario si coincide.")
+        print("Método: load_user(id), el usario si coincide.")
         return User(id=usuario[0], Vrfc=[1], Vpass=[6])
     return None
 
@@ -69,13 +69,16 @@ def iniciosesion():
             if usuario:
                 row = usuario[6]
                 rol = usuario[7]
-                session['rol'] = rol  # Almacena el rol en la sesión
-                user = User(id=usuario[0], Vrfc=[1], Vpass=check_password_hash(row,contraseña))
-                print(user)
-                login_user(user)
-                return redirect(url_for('inicio'))
+                if check_password_hash(row,contraseña):
+                    session['rol'] = rol  # Almacena el rol en la sesión
+                    user = User(id=usuario[0], Vrfc=[1], Vpass=[6])
+                    login_user(user)
+                    return redirect(url_for('inicio'))
+                else:
+                    flash('Credenciales incorrectas, favor de reintentar...')
+                    return render_template('login.html')
             else:
-                flash('Credenciales incorrectas, favor de reintentar...')
+                flash('RFC ingresado no existe...')
                 return render_template('login.html')
 
 @app.route('/Cerrarsesion')
@@ -91,7 +94,6 @@ def inicio():
 
 # ---------------------------  Opciones administrador ---------------------------------------
 @app.route('/RegistroMedico')
-@login_required
 def interfazM():
     if session:
         rol = session.get('rol')  # Obtiene el rol de la sesión
@@ -103,7 +105,6 @@ def interfazM():
         return render_template('login.html')
 
 @app.route('/RegistrarMedico', methods=['POST'])
-@login_required
 def registrarM():
     if request.method == 'POST':
         Vnombre= request.form['txtNombre']
@@ -135,7 +136,6 @@ def registrarM():
 
 
 @app.route('/ConsultarMedico')
-@login_required
 def consulta():
     rol = session.get('rol')  # Obtiene el rol de la sesión
     if rol == 1:
@@ -148,7 +148,6 @@ def consulta():
 
 
 @app.route('/Consultanombre', methods=['POST'])
-@login_required
 def consultanombre():
     Varbuscar= request.form['txtbuscar']
     CC= mysql.connection.cursor()
