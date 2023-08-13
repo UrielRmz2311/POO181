@@ -55,7 +55,7 @@ def iniciosesion():
         contraseña = request.form['txtpass']
         
         if rfc == "" or contraseña == "":
-            flash('No se pueden enviar campos vacios')
+            flash('No se puede entrar con campos vacios')
             return render_template('login.html')
         else:
             CS = mysql.connection.cursor()
@@ -65,7 +65,6 @@ def iniciosesion():
             usuario = CS.fetchone()
             mysql.connection.commit()
             # Iniciar sesión exitosa
-            # Aquí puedes establecer una sesión o tomar otras medidas según tus necesidades
             if usuario:
                 row = usuario[6]
                 rol = usuario[7]
@@ -98,6 +97,7 @@ def interfazM():
         if rol == 1:
             return render_template('formmedico.html')
         else:
+            flash('No es administrador')
             return render_template('inicio.html')
     else:
         return render_template('login.html')
@@ -144,6 +144,7 @@ def consulta():
         medicos= CC.fetchall()
         return render_template('cmedico.html', listamedico = medicos)
     else:
+        flash('No es administrador')
         return render_template('inicio.html')
 
 
@@ -156,6 +157,39 @@ def consultanombre():
     medicos= CC.fetchall()
     return render_template('cmedico.html', listamedico = medicos)
 
+# Ruta editar médico -------------------------------------------------
+@app.route('/editar/<id>')
+@login_required
+def editarmedico(id):
+    CSid = mysql.connection.cursor()
+    CSid.execute('select * from medicos where id = %s', (id,))
+    Consid = CSid.fetchone()
+    return render_template('amedico.html' , medico= Consid) 
+
+@app.route('/actualizar/<id>', methods=['POST'])
+@login_required
+def actualizar(id):
+    if request.method == 'POST':
+        Vnombre= request.form['txtNombre']
+        Vapellido= request.form['txtApellido']
+        Vcedula= request.form['txtcedula']
+        Vrfc= request.form['txtrfc']
+        Vcorreo= request.form['txtcorreo']
+        Vcontrasena= request.form['txtpass']
+        Vpass= request.form['txtpassw']
+        Vrol= request.form['txtrol']
+        
+    
+# Eliminar médico -------------------------------------------------------
+@app.route('/borrar/<id>', methods=['POST'])
+@login_required
+def eliminar(id):
+    if request.method == 'POST':
+        CSeli = mysql.connection.cursor()
+        CSeli.execute('delete from medicos where id= %s',(id,))
+        mysql.connection.commit()
+    flash('Se elimino el médico correctamente')
+    return redirect(url_for('cmedico'))
 #---------------------------------------------------------------------------------------------------------
 
 @app.route('/EdificioC')

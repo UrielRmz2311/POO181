@@ -5,6 +5,21 @@
 {% endblock %}
 
 {% block body %}
+      {% with mensajes= get_flashed_messages()%}
+      {%if mensajes%}
+        {%for msj in mensajes%}
+          <script>
+            {% if 'No es administrador' in mensajes %}
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Tu perfil no es administrador',
+              })
+            {% endif %}
+          </script>
+        {% endfor %}
+      {% endif %}
+      {% endwith%}
       <div class="expedientes">
         <a class="btn-a btn-light" href="../Consultorio/epaciente.html">Expedientes de Pacientes</a>
       </div>

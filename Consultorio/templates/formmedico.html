@@ -23,12 +23,15 @@
                         <strong> {{msj}} </strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <script>Swal.fire(
-                      'Usuario Guardado!!',
-                      'Verifica en interfaz Consulta de Médico!!',
-                      'Creado'
-                    )
-                  </script>
+                    <script>
+                      {% if 'El médico se guardo correctamente' in mensajes %}
+                        Swal.fire(
+                          'Médico Guardado!!',
+                          'Verifica en interfaz Consulta de Médico!!',
+                          'success'
+                        );
+                      {% endif %}
+                    </script>
                   {% endfor %}
                {% endif %}
             {% endwith%}
@@ -86,3 +89,6 @@
       </form>
     </div>
   {% endblock %}
+
+
+  
