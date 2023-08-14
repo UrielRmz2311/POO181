@@ -1,14 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for,flash,session, jsonify,Response
+from flask import Flask, render_template, request, redirect, url_for,flash,session, jsonify
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user,logout_user,login_required, UserMixin
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Flowable, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet
-from io import BytesIO
-from xhtml2pdf import pisa
-
+from fpdf import FPDF
+import json
 
 
 app = Flask(__name__)
@@ -398,15 +393,6 @@ def consultacita():
     CS.execute('select * from expacientes where cedulademedico = %s', (cedula_medico,))
     Consultas = CS.fetchall()
     return render_template('consultacita.html', listapacientes = Consultas)
-
-@app.route('/Consultarcitapornombre', methods=['POST'])
-@login_required
-def Buscarcitapornombre():
-    Varbuscar= request.form['txtbuscar']
-    CCs= mysql.connection.cursor()
-    CCs.execute('select * from expacientes where nombrepaciente LIKE %s', (f'%{Varbuscar}%',))
-    consultapacs= CCs.fetchall()
-    return render_template('consultacita.html', listapacientes = consultapacs)
     
 
 #-------------------- Consultar paciente ------------------------------------------
@@ -509,35 +495,10 @@ def eliminarpaciente(id):
         return jsonify({'message': 'success'})
     return jsonify({'message': 'error'})
 # ---------------------------------------------------------------------------------------------------
+@app.route('/admision')
+def registroproceso():
+    return render_template('ADMISION.html')
 
-@app.route('/generareceta/<id>')
-def generareceta(id):
-    cs = mysql.connection.cursor()
-    cs.execute('SELECT * FROM expacientes where id = %s', (id,))
-    data = cs.fetchall()
-
-    html_content = render_template('pdf.html', pacientes=data)
-
-    response = Response(content_type='application/pdf')
-    response.headers['Content-Disposition'] = 'inline; filename=receta.pdf'
-
-    buffer = BytesIO()
-
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
-    story = []
-
-    # Convertir el HTML a PDF utilizando xhtml2pdf
-    result = pisa.CreatePDF(html_content, dest=buffer)
-
-    if not result.err:
-        pdf_data = buffer.getvalue()
-        buffer.close()
-
-        response.data = pdf_data
-        return response
-    else:
-        buffer.close()
-        return "Error generando el PDF"
 
 if __name__ == '__main__':
  app.run(port=5000,debug=True)

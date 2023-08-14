@@ -1,0 +1,46 @@
+{% extends 'plantilla.html' %}
+
+{% block customCSS %}
+  <link rel="stylesheet" href="{{url_for('static', filename='css/estilos5.css')}}">
+{% endblock %}
+
+{% block body %}
+
+    <div class="container mt-4">
+        <a class="btn btn-primary mb-3"  href="/ConsultorioMedico">
+            <i class="bi bi-arrow-return-left"></i> Regresar</a>
+        <h2 class="text-center mt-3 mb-3 fw-bold display-1 text-white">Tabla de Citas</h2>
+        <table class="table">
+            <div class="text-end">
+                <div class="text-center">
+                    <a class="btn btn-outline-info" href="/Consultacita">Mostrar Todos los Registros</a>
+                </div>
+                <form action="/Consultarcitapornombre" method="POST" class="search-form mt-3">
+                    <input type="text" name="txtbuscar" placeholder="Buscar por Nombre..." required>
+                    <button class="btn btn-success" type="submit">Buscar</button>
+            </form>
+            </div>
+        <thead>
+            <tr>
+            <th>Nombre Paciente</th>
+            <th>Apellidos Paciente</th>
+            <th>Fecha de cita</th>
+            <th>Imprimir</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pac in listapacientes %}
+            <tr>
+                <td>{{ pac.4 }}</td>
+                <td>{{ pac.5 }}</td>
+                <td>{{ pac.3 }}</td>
+                <td>
+                    <a class="btn btn-primary" href="/generareceta/{{ pac.0 }}">imprimir</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+  </div>
+
+{% endblock %}
