@@ -1,0 +1,81 @@
+{% extends 'plantilla.html' %}
+
+{% block customCSS %}
+  <link rel="stylesheet" href="{{url_for('static', filename='css/estilos5.css')}}">
+{% endblock %}
+
+{% block body %}
+
+        <div class="container mt-4">
+            <h1 class="mb-4">Cita Exploración y Diagnóstico</h1>
+            <form>
+                <h2>Exploración</h2>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" class="form-control" id="fecha">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="paciente">Paciente:</label>
+                        <select class="form-control" id="paciente">
+                            <option value="">Selecciona un paciente</option>
+                            <!-- Aquí podrías agregar opciones de pacientes registrados -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row mt-3">
+                    <div class="col-md-4">
+                        <label for="peso">Peso (kg):</label>
+                        <input type="number" class="form-control" id="peso">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="altura">Altura (cm):</label>
+                        <input type="number" class="form-control" id="altura">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="temperatura">Temperatura (°C):</label>
+                        <input type="number" class="form-control" id="temperatura">
+                    </div>
+                </div>
+                <div class="form-row mt-3">
+                    <div class="col-md-4">
+                        <label for="latidos">Latidos por minuto:</label>
+                        <input type="number" class="form-control" id="latidos">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="saturacion">Saturación de oxígeno (%):</label>
+                        <input type="number" class="form-control" id="saturacion">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="glucosa">Glucosa (mg/dL):</label>
+                        <input type="number" class="form-control" id="glucosa">
+                    </div>
+                </div>
+                
+                <h2 class="mt-4">Diagnóstico</h2>
+                <div class="form-group">
+                    <label for="sintomas">Síntomas:</label>
+                    <textarea class="form-control" id="sintomas" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="diagnostico">Dx (Diagnóstico):</label>
+                    <input type="text" class="form-control" id="diagnostico">
+                </div>
+                <div class="form-group">
+                    <label for="tratamiento">Tratamiento (medicamentos e indicaciones):</label>
+                    <textarea class="form-control" id="tratamiento" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="estudios">Solicitud de Estudios:</label>
+                    <textarea class="form-control" id="estudios" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar Cita</button>
+            </form>
+
+            <div class="mt-4">
+                <!-- Aquí puedes mostrar la receta generada por el sistema -->
+            </div>
+        </div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'plantilla.html' %}
 
 {% block customCSS %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/estilos3.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/estilos4.css')}}">
 {% endblock %}
 
 {% block body %}
@@ -17,30 +17,53 @@
               })
             {% endif %}
           </script>
+          <script>
+            {% if 'Ingresar medico' in mensajes %}
+            Swal.fire({
+              position: 'top-center',
+              icon: 'success',
+              title: 'Bienvenido..!!',
+              showConfirmButton: false,
+              timer: 1500
+            })
+            {% endif %}
+          </script>
         {% endfor %}
       {% endif %}
       {% endwith%}
-      <div class="expedientes">
-        <a class="btn-a btn-light" href="../Consultorio/epaciente.html">Expedientes de Pacientes</a>
-      </div>
-
-      <div class="citas">
-        <a class="btn-a btn-light" href="../Consultorio/acita.html">Agendar Citas</a>
-      </div>
-
-      <div class="registrarPac">
-        <a class="btn-a btn-light" href="../POO181/rpaciente.html">Registrar Pacientes</a>
-      </div>
-
-      <div class="diagnostico">
-        <a class="btn-a btn-light" href="">Exploración y diagnostico</a>
-      </div>
-
-      <div class="consultarcita">
-        <a class="btn-a btn-light" href="../POO181/ccita.html">Consultar Citas</a>
-      </div>
-
-      <div class="consultarpac">
-        <a class="btn-a btn-light" href="../POO181/cpaciente.html">Consultar Pacientes</a>
-      </div>
+    
+      <div class="container">
+        <a href="/Expedientepaciente">
+            <div class="box"> 
+                <img src="{{ url_for('static', filename='imagenes/regi.pac.jpeg') }}">
+                <div class="capa">
+                    <h2>Expediente de Paciente</h2>
+                </div>
+            </div>
+        </a>
+        <a href="url_de_la_interfaz_2">
+            <div class="box">
+                <img src="{{ url_for('static', filename='imagenes/consulta-pacientes.jpeg') }}" alt="">
+                <div class="capa">
+                    <h2>Consulta de Pacientes</h2>
+                </div>
+            </div>
+        </a>
+        <a href="/Exploracion">
+            <div class="box">
+                <img src="{{ url_for('static', filename='imagenes/exploracion.jpeg') }}" alt="">
+                <div class="capa">
+                    <h2>Exploración y Diagnóstico de Paciente</h2>
+                </div>
+            </div>
+        </a>
+        <a href="url_de_la_interfaz_4">
+            <div class="box">
+                <img src="{{ url_for('static', filename='imagenes/registro-citas.jpeg') }}" alt="">
+                <div class="capa">
+                    <h2>Registro de Citas</h2>
+                </div>
+            </div>
+        </a>
+    </div>
 {% endblock %}

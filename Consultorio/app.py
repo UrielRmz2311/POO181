@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for,flash,session
+from flask import Flask, render_template, request, redirect, url_for,flash,session, jsonify
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user,logout_user,login_required, UserMixin
@@ -16,11 +16,12 @@ try:
 except Exception as ex:
     print(ex)
 
-
+#Ruta principal ------------------------------
 @app.route('/')
 def login():
     return render_template('login.html') 
 
+# Creamos la clase pare guardar el Usuario para las interface
 class User(UserMixin):
     def __init__(self, id, Vrfc ,Vpass):
         self.id = id
@@ -29,12 +30,12 @@ class User(UserMixin):
     
     def get_id(self):
         return str(self.id)
-
+#Obliga a iniciar sesion 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message= 'Acceso denegado... Inicia Sesión para acceder'
 
-
+#Guardamos la sesion 
 @login_manager.user_loader
 def load_user(id):
     print('Este es mi id:' + id)
@@ -47,7 +48,7 @@ def load_user(id):
     return None
 
 
-
+#Metodo inisiar sesion --------------------------------------------------
 @app.route('/iniciosesion', methods=['POST'])
 def iniciosesion():
     if request.method == 'POST':
@@ -68,15 +69,21 @@ def iniciosesion():
             if usuario:
                 row = usuario[6]
                 rol = usuario[7]
-                session['rol'] = rol  # Almacena el rol en la sesión
-                user = User(id=usuario[0], Vrfc=[1], Vpass=check_password_hash(row,contraseña))
-                print(user)
-                login_user(user)
-                return redirect(url_for('inicio'))
+                if check_password_hash(row,contraseña):
+                    session['rol'] = rol  # Almacena el rol en la sesión
+                    user = User(id=usuario[0], Vrfc=[1], Vpass=[6])
+                    print(user)
+                    login_user(user)
+                    flash('Ingresar medico')
+                    return redirect(url_for('inicio'))
+                else:
+                    flash('Contraseña incorrecta, favor de reintentar...')
+                    return render_template('login.html')
             else:
-                flash('Credenciales incorrectas, favor de reintentar...')
+                flash('RFC ingresado no existe, favor de reintentar...')
                 return render_template('login.html')
-
+                
+# Cerrar sesion incluyendo el usuario con la sesion guardada------
 @app.route('/Cerrarsesion')
 def cerrarsesion():
     logout_user()
@@ -93,7 +100,7 @@ def inicio():
 @login_required
 def interfazM():
     if session:
-        rol = session.get('rol')  # Obtiene el rol de la sesión
+        rol = session.get('rol')  # Obtenemos el rol de la sesión
         if rol == 1:
             return render_template('formmedico.html')
         else:
@@ -137,7 +144,7 @@ def registrarM():
 @app.route('/ConsultarMedico')
 @login_required
 def consulta():
-    rol = session.get('rol')  # Obtiene el rol de la sesión
+    rol = session.get('rol')  # Obtenemos el rol de la sesión
     if rol == 1:
         CC= mysql.connection.cursor()
         CC.execute('select * from medicos')
@@ -147,7 +154,7 @@ def consulta():
         flash('No es administrador')
         return render_template('inicio.html')
 
-
+#Consultamos por nombre-------------------------------------------------
 @app.route('/Consultanombre', methods=['POST'])
 @login_required
 def consultanombre():
@@ -164,7 +171,7 @@ def editarmedico(id):
     CSid = mysql.connection.cursor()
     CSid.execute('select * from medicos where id = %s', (id,))
     Consid = CSid.fetchone()
-    return render_template('amedico.html' , medico= Consid) 
+    return render_template('amedico.html', med= Consid) 
 
 @app.route('/actualizar/<id>', methods=['POST'])
 @login_required
@@ -179,7 +186,51 @@ def actualizar(id):
         Vpass= request.form['txtpassw']
         Vrol= request.form['txtrol']
         
-    
+        if Vnombre == "" or Vapellido == "" or Vcedula == "" or Vrfc == "" or Vcontrasena == "" or Vpass == "" or Vrol == "Elegir...":
+            flash('No se pueden actualizar campos vacios')
+            #Regresamos a la interfaz y con ella los datos ya insertados
+            CSid = mysql.connection.cursor()
+            CSid.execute('select * from medicos where id = %s', (id,))
+            Consid = CSid.fetchone()
+            return render_template('amedico.html', med= Consid) 
+        else:
+            CSid = mysql.connection.cursor()
+            CSid.execute('select * from medicos where id = %s', (id,))
+            Consid = CSid.fetchone()
+            passwo = Consid[6]
+            #Comparamos la contraseña con la BD para ver si son iguales
+            if passwo==Vcontrasena:
+                CSedit= mysql.connection.cursor()
+                CSedit.execute('update medicos set rfc= %s, nombre= %s, apellidos= %s, cedula= %s, correo= %s, contraseña= %s, rol= %s where id= %s', (Vrfc, Vnombre, Vapellido, Vcedula, Vcorreo, Vcontrasena, Vrol, id,))
+                mysql.connection.commit()
+                
+                CC = mysql.connection.cursor()
+                CC.execute('select * from medicos')
+                medicos = CC.fetchall()
+                flash('El Médico se actualizó correctamente')
+                return render_template('cmedico.html', listamedico=medicos)
+            else:
+                #Si el usuario introduce nuevas contraseñas, se comparan 
+                if Vcontrasena == Vpass:
+                    Encrippass = generate_password_hash(Vcontrasena, 'pbkdf2:sha256')
+                    print(check_password_hash(Encrippass,Vcontrasena))
+            
+                    CSedit= mysql.connection.cursor()
+                    CSedit.execute('update medicos set rfc= %s, nombre= %s, apellidos= %s, cedula= %s, correo= %s, contraseña= %s, rol= %s where id= %s', (Vrfc, Vnombre, Vapellido, Vcedula, Vcorreo, Encrippass, Vrol, id,))
+                    mysql.connection.commit()
+                    
+                    CC = mysql.connection.cursor()
+                    CC.execute('select * from medicos')
+                    medicos = CC.fetchall()
+                    flash('El Médico se actualizó correctamente')
+                    return render_template('cmedico.html', listamedico=medicos)
+                else:
+                    flash('Las contraseñas no coinciden')
+                    CSid = mysql.connection.cursor()
+                    CSid.execute('select * from medicos where id = %s', (id,))
+                    Consid = CSid.fetchone()
+                    return render_template('amedico.html', med= Consid)
+        
 # Eliminar médico -------------------------------------------------------
 @app.route('/borrar/<id>', methods=['POST'])
 @login_required
@@ -188,21 +239,75 @@ def eliminar(id):
         CSeli = mysql.connection.cursor()
         CSeli.execute('delete from medicos where id= %s',(id,))
         mysql.connection.commit()
-    flash('Se elimino el médico correctamente')
-    return redirect(url_for('cmedico'))
+        return jsonify({'message': 'success'})
+    return jsonify({'message': 'error'})
+
 #---------------------------------------------------------------------------------------------------------
 
-@app.route('/EdificioC')
-def edificioC():
-    return render_template('edificioc.html')
+#------------------------------------- Pacientes --------------------------------------------------------
+@app.route('/Expedientepaciente')
+@login_required
+def introexpac():
+    return render_template('expaciente.html')
 
-@app.route('/Biblioteca')
-def Biblio():
-    return render_template('biblioteca.html')
+#---------------- Registrar pacientes ------------------------------------------------------------------
+@app.route('/Registropaciente', methods=['POST'])
+@login_required
+def Registropaciente():
+    if request.method == 'POST':
+        Vcedula = request.form['txtcedula']
+        Vnombre = request.form['txtNombre']
+        Vapellido = request.form['txtApellido']
+        Vnacimiento = request.form['txtnacimiento']
+        Venfermedades = request.form['txtenfermedades'] if 'txtenfermedades' in request.form else ""
+        Valergias = request.form['txtalergias'] if 'txtalergias' in request.form else ""
+        Vantecedentes = request.form['txtantecedentes'] if 'txtantecedentes' in request.form else ""
+        #print(Vcedula, Vnombre, Vapellido, Vnacimiento, Venfermedades, Valergias, Vantecedentes)
+        
+        if Vcedula == "" or Vnombre == "" or Vapellido =="" or Vnacimiento == "" or Venfermedades == "" or Valergias == "" or Vantecedentes == "":
+            flash('No se pueden guardar campos vacíos')
+            return render_template('expaciente.html')  
+        else:      
+            CSid = mysql.connection.cursor()
+            CSid.execute('SELECT cedula FROM medicos WHERE cedula=%s', (Vcedula,))
+            Consid = CSid.fetchone()
+            if Consid is None:
+                flash('La cédula ingresada no existe en la base de datos')
+                return render_template('expaciente.html')
+            else:
+                if Venfermedades == 'Otra':
+                    Venfermedadesotro = request.form['txtenfermedades_otro']
+                    if Venfermedadesotro == "":
+                        flash('No se pueden guardar campos vacíos')
+                        return render_template('expaciente.html')
+                    else:
+                        Venfermedades = Venfermedadesotro
 
-@app.route('/CAPTA')
-def capta():
-    return render_template('capta.html')
+                if Valergias == 'Otro':
+                    Valergiasotro = request.form['txtalergias_otro']
+                    if Valergiasotro == "":
+                        flash('No se pueden guardar campos vacíos')
+                        return render_template('expaciente.html')
+                    else:
+                        Valergias = Valergiasotro
+
+                if Vantecedentes == 'Otro':
+                    Vantecedentesotro = request.form['txtantecedentes_otro']
+                    if Vantecedentesotro == "":
+                        flash('No se pueden guardar campos vacíos')
+                        return render_template('expaciente.html')
+                    else:
+                        Vantecedentes = Vantecedentesotro
+                CS = mysql.connection.cursor()
+                CS.execute('insert into pacientes(cedulamedico,nombre,apellidos,fechanacimiento,enfermedades,alergias,antecedentes) values (%s,%s,%s,%s,%s,%s,%s)', (Vcedula, Vnombre, Vapellido, Vnacimiento, Venfermedades, Valergias, Vantecedentes))
+                mysql.connection.commit()
+                flash('El paciente se guardó correctamente')
+                return render_template('expaciente.html')
+            
+# Ruta Exploracion y diagnostigo ---------------------------------------------------
+@app.route('/Exploracion')
+def exploracion():
+    return render_template('exploracion.html')
 
 @app.route('/CIDEA')
 def cidea():
