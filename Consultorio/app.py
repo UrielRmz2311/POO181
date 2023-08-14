@@ -8,6 +8,7 @@ from reportlab.platypus import SimpleDocTemplate, Flowable, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet
 from io import BytesIO
 from xhtml2pdf import pisa
+from datetime import datetime
 
 
 
@@ -268,6 +269,7 @@ def introexpac():
     cedula_medico = session.get('cedula_medico')
     return render_template('expaciente.html', cedula_medico = cedula_medico)
 
+global_edad = None 
 #---------------- Registrar pacientes ------------------------------------------------------------------
 @app.route('/Registropaciente', methods=['POST'])
 @login_required
@@ -282,7 +284,10 @@ def Registropaciente():
         Valergias = request.form['txtalergias'] if 'txtalergias' in request.form else ""
         Vantecedentes = request.form['txtantecedentes'] if 'txtantecedentes' in request.form else ""
         #print(Vcedula, Vnombre, Vapellido, Vnacimiento, Venfermedades, Valergias, Vantecedentes)
-        
+        birthdate = datetime.strptime(Vnacimiento, '%Y-%m-%d')
+        age = (datetime.today() - birthdate).days // 365
+        session['patient_age'] = age
+        print(age)
         if Vcedula == "" or Vnombre == "" or Vapellido =="" or Vnacimiento == "" or Venfermedades == "" or Valergias == "" or Vantecedentes == "":
             flash('No se pueden guardar campos vacíos')
             return render_template('expaciente.html') 
@@ -512,11 +517,12 @@ def eliminarpaciente(id):
 
 @app.route('/generareceta/<id>')
 def generareceta(id):
+    age=session['patient_age'] 
     cs = mysql.connection.cursor()
     cs.execute('SELECT * FROM expacientes where id = %s', (id,))
     data = cs.fetchall()
 
-    html_content = render_template('pdf.html', pacientes=data)
+    html_content = render_template('pdf.html', pacientes=data,edad=age)
 
     response = Response(content_type='application/pdf')
     response.headers['Content-Disposition'] = 'inline; filename=receta.pdf'
