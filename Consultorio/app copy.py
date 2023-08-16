@@ -1,9 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for,flash,session, jsonify
+from flask import Flask, render_template, request, redirect, url_for,flash,session, jsonify,Response
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user,logout_user,login_required, UserMixin
-from fpdf import FPDF
-import json
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Flowable, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+from io import BytesIO
+from xhtml2pdf import pisa
+from datetime import datetime
+
 
 
 app = Flask(__name__)
@@ -263,6 +269,7 @@ def introexpac():
     cedula_medico = session.get('cedula_medico')
     return render_template('expaciente.html', cedula_medico = cedula_medico)
 
+global_edad = None 
 #---------------- Registrar pacientes ------------------------------------------------------------------
 @app.route('/Registropaciente', methods=['POST'])
 @login_required
@@ -277,7 +284,10 @@ def Registropaciente():
         Valergias = request.form['txtalergias'] if 'txtalergias' in request.form else ""
         Vantecedentes = request.form['txtantecedentes'] if 'txtantecedentes' in request.form else ""
         #print(Vcedula, Vnombre, Vapellido, Vnacimiento, Venfermedades, Valergias, Vantecedentes)
-        
+        birthdate = datetime.strptime(Vnacimiento, '%Y-%m-%d')
+        age = (datetime.today() - birthdate).days // 365
+        session['patient_age'] = age
+        print(age)
         if Vcedula == "" or Vnombre == "" or Vapellido =="" or Vnacimiento == "" or Venfermedades == "" or Valergias == "" or Vantecedentes == "":
             flash('No se pueden guardar campos vacíos')
             return render_template('expaciente.html') 
@@ -337,15 +347,17 @@ def exploracionpacie():
     consultapac= CC.fetchall()
     return render_template('cesxploracion.html', listapacientes = consultapac)
 
+
 @app.route('/Exploracion/<id>')
 def exploracion(id):
     global global_idpaciente
+    fechahoy = datetime.today().strftime('%Y-%m-%d')
     cedula_medico = session.get('cedula_medico')
     CSid = mysql.connection.cursor()
     CSid.execute('select * from pacientes where id = %s', (id,))
     global_idpaciente = id
     Consid = CSid.fetchone()
-    return render_template('exploracion.html', pac = Consid, cedula=cedula_medico) 
+    return render_template('exploracion.html', pac = Consid, cedula=cedula_medico, fecha=fechahoy) 
 
 
 @app.route('/registrar_exploracion', methods=['POST'])
@@ -393,6 +405,30 @@ def consultacita():
     CS.execute('select * from expacientes where cedulademedico = %s', (cedula_medico,))
     Consultas = CS.fetchall()
     return render_template('consultacita.html', listapacientes = Consultas)
+
+@app.route('/Consultarcitapornombre', methods=['POST'])
+@login_required
+def Buscarcitapornombre():
+    Varbuscar= request.form['txtbuscar']
+    CCs= mysql.connection.cursor()
+    CCs.execute('select * from expacientes where nombrepaciente LIKE %s', (f'%{Varbuscar}%',))
+    consultapacs= CCs.fetchall()
+    return render_template('consultacita.html', listapacientes = consultapacs)
+
+@app.route('/Consultapacfecha', methods=['POST'])
+@login_required
+def consultapacfecha():
+    fecha_buscar = request.form['fechaBuscar']
+    try:
+        fecha_convertida = datetime.strptime(fecha_buscar, '%Y-%m-%d')
+    except ValueError:
+        flash('Fecha inválida. Formato esperado: AAAA-MM-DD', 'error')
+        return redirect('/Consultacita')
+
+    CC = mysql.connection.cursor()
+    CC.execute('SELECT * FROM expacientes WHERE fecha = %s', (fecha_convertida,))
+    consultapac = CC.fetchall()
+    return render_template('consultacita.html', listapacientes=consultapac)
     
 
 #-------------------- Consultar paciente ------------------------------------------
@@ -491,14 +527,45 @@ def eliminarpaciente(id):
     if request.method == 'POST':
         CSeli = mysql.connection.cursor()
         CSeli.execute('delete from pacientes where id= %s',(id,))
+        CSeli.execute('delete from expacientes where idpaciente= %s',(id,))
         mysql.connection.commit()
         return jsonify({'message': 'success'})
     return jsonify({'message': 'error'})
 # ---------------------------------------------------------------------------------------------------
-@app.route('/admision')
-def registroproceso():
-    return render_template('ADMISION.html')
 
+@app.route('/generareceta/<id>')
+def generareceta(id):
+    age=session['patient_age']
+    cedula_medico = session.get('cedula_medico')
+    cs = mysql.connection.cursor()
+    cs.execute('SELECT * FROM expacientes where id = %s', (id,))
+    data = cs.fetchall()
+    CCmedico= mysql.connection.cursor()
+    CCmedico.execute('select * from medicos where cedula=%s', (cedula_medico,))
+    medicos= CCmedico.fetchall()
+
+    html_content = render_template('pdf.html', pacientes=data,edad=age,med=medicos)
+
+    response = Response(content_type='application/pdf')
+    response.headers['Content-Disposition'] = 'inline; filename=receta.pdf'
+
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    story = []
+
+    # Convertir el HTML a PDF utilizando xhtml2pdf
+    result = pisa.CreatePDF(html_content, dest=buffer)
+
+    if not result.err:
+        pdf_data = buffer.getvalue()
+        buffer.close()
+
+        response.data = pdf_data
+        return response
+    else:
+        buffer.close()
+        return "Error generando el PDF"
 
 if __name__ == '__main__':
- app.run(port=5000,debug=True)
+ app.run(port=5800,debug=True)

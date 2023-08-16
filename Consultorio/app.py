@@ -347,15 +347,17 @@ def exploracionpacie():
     consultapac= CC.fetchall()
     return render_template('cesxploracion.html', listapacientes = consultapac)
 
+
 @app.route('/Exploracion/<id>')
 def exploracion(id):
     global global_idpaciente
+    fechahoy = datetime.today().strftime('%Y-%m-%d')
     cedula_medico = session.get('cedula_medico')
     CSid = mysql.connection.cursor()
     CSid.execute('select * from pacientes where id = %s', (id,))
     global_idpaciente = id
     Consid = CSid.fetchone()
-    return render_template('exploracion.html', pac = Consid, cedula=cedula_medico) 
+    return render_template('exploracion.html', pac = Consid, cedula=cedula_medico, fecha=fechahoy) 
 
 
 @app.route('/registrar_exploracion', methods=['POST'])
@@ -412,6 +414,21 @@ def Buscarcitapornombre():
     CCs.execute('select * from expacientes where nombrepaciente LIKE %s', (f'%{Varbuscar}%',))
     consultapacs= CCs.fetchall()
     return render_template('consultacita.html', listapacientes = consultapacs)
+
+@app.route('/Consultapacfecha', methods=['POST'])
+@login_required
+def consultapacfecha():
+    fecha_buscar = request.form['fechaBuscar']
+    try:
+        fecha_convertida = datetime.strptime(fecha_buscar, '%Y-%m-%d')
+    except ValueError:
+        flash('Fecha inválida. Formato esperado: AAAA-MM-DD', 'error')
+        return redirect('/Consultacita')
+
+    CC = mysql.connection.cursor()
+    CC.execute('SELECT * FROM expacientes WHERE fecha = %s', (fecha_convertida,))
+    consultapac = CC.fetchall()
+    return render_template('consultacita.html', listapacientes=consultapac)
     
 
 #-------------------- Consultar paciente ------------------------------------------
@@ -510,6 +527,7 @@ def eliminarpaciente(id):
     if request.method == 'POST':
         CSeli = mysql.connection.cursor()
         CSeli.execute('delete from pacientes where id= %s',(id,))
+        CSeli.execute('delete from expacientes where idpaciente= %s',(id,))
         mysql.connection.commit()
         return jsonify({'message': 'success'})
     return jsonify({'message': 'error'})
@@ -517,12 +535,16 @@ def eliminarpaciente(id):
 
 @app.route('/generareceta/<id>')
 def generareceta(id):
-    age=session['patient_age'] 
+    age=session['patient_age']
+    cedula_medico = session.get('cedula_medico')
     cs = mysql.connection.cursor()
     cs.execute('SELECT * FROM expacientes where id = %s', (id,))
     data = cs.fetchall()
+    CCmedico= mysql.connection.cursor()
+    CCmedico.execute('select * from medicos where cedula=%s', (cedula_medico,))
+    medicos= CCmedico.fetchall()
 
-    html_content = render_template('pdf.html', pacientes=data,edad=age)
+    html_content = render_template('pdf.html', pacientes=data,edad=age,med=medicos)
 
     response = Response(content_type='application/pdf')
     response.headers['Content-Disposition'] = 'inline; filename=receta.pdf'
@@ -546,4 +568,4 @@ def generareceta(id):
         return "Error generando el PDF"
 
 if __name__ == '__main__':
- app.run(port=5000,debug=True)
+ app.run(port=5800,debug=True)

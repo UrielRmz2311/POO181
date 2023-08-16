@@ -32,7 +32,7 @@
                 <div class="form-row">
                     <div class="col-md-6 text-white">
                         <label for="fecha">Fecha:</label>
-                        <input type="date" class="form-control" name="txtfecha" >
+                        <input type="date" class="form-control" name="txtfecha" value="{{fecha}}">
                     </div>
                     <div class="col-md-6 text-white">
                         <label for="paciente">Cedula Médico:</label>
@@ -40,15 +40,15 @@
                     </div>
                     <div class="col-md-6 text-white">
                         <label for="paciente">No.Paciente:</label>
-                        <input type="number" class="form-control" name="txtidpaciente" value="{{  pac.0 }}">
+                        <input type="number" class="form-control" name="txtidpaciente" value="{{  pac.0 }}" readonly>
                     </div>
                     <div class="col-md-6 text-white">
                         <label for="paciente">Nombre Paciente:</label>
-                        <input type="text" class="form-control" name="txtnombre" value="{{  pac.2 }}" >
+                        <input type="text" class="form-control" name="txtnombre" value="{{  pac.2 }}" readonly>
                     </div>
                     <div class="col-md-6 text-white">
                         <label for="paciente">Apellidos Paciente:</label>
-                        <input type="text" class="form-control" name="txtapellidos" value="{{  pac.3 }}">
+                        <input type="text" class="form-control" name="txtapellidos" value="{{  pac.3 }}" readonly>
                     </div>
                 </div>
                 <div class="form-row mt-3">
@@ -72,7 +72,7 @@
                     </div>
                     <div class="col-md-4 text-white">
                         <label for="saturacion">Saturación de oxígeno (%):</label>
-                        <input type="number" class="form-control" name="saturacion" id="saturacion">
+                        <input type="number" class="form-control" name="saturacion" id="saturacion" value="95">
                     </div>
                     <div class="col-md-4 text-white">
                         <label for="glucosa">Glucosa (mg/dL):</label>
@@ -102,7 +102,6 @@
             </form>
 
             <div class="mt-4">
-                <!-- Aquí puedes mostrar la receta generada por el sistema -->
             </div>
         </div>
 
