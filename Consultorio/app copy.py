@@ -284,10 +284,6 @@ def Registropaciente():
         Valergias = request.form['txtalergias'] if 'txtalergias' in request.form else ""
         Vantecedentes = request.form['txtantecedentes'] if 'txtantecedentes' in request.form else ""
         #print(Vcedula, Vnombre, Vapellido, Vnacimiento, Venfermedades, Valergias, Vantecedentes)
-        birthdate = datetime.strptime(Vnacimiento, '%Y-%m-%d')
-        age = (datetime.today() - birthdate).days // 365
-        session['patient_age'] = age
-        print(age)
         if Vcedula == "" or Vnombre == "" or Vapellido =="" or Vnacimiento == "" or Venfermedades == "" or Valergias == "" or Vantecedentes == "":
             flash('No se pueden guardar campos vacíos')
             return render_template('expaciente.html') 
@@ -326,7 +322,8 @@ def Registropaciente():
                 CS.execute('insert into pacientes(cedulamedico,nombre,apellidos,fechanacimiento,enfermedades,alergias,antecedentes) values (%s,%s,%s,%s,%s,%s,%s)', (Vcedula, Vnombre, Vapellido, Vnacimiento, Venfermedades, Valergias, Vantecedentes))
                 mysql.connection.commit()
                 flash('El paciente se guardó correctamente')
-                return render_template('expaciente.html')
+                cedula_medico = session.get('cedula_medico')
+                return render_template('expaciente.html', cedula_medico = cedula_medico)
             
 # Ruta Exploracion y diagnostigo ---------------------------------------------------
 @app.route('/Exploracionpacie')
@@ -531,6 +528,16 @@ def eliminarpaciente(id):
         mysql.connection.commit()
         return jsonify({'message': 'success'})
     return jsonify({'message': 'error'})
+
+@app.route('/borrarexpaciente/<id>', methods=['POST'])
+@login_required
+def eliminarexpaciente(id):
+    if request.method == 'POST':
+        CSeli = mysql.connection.cursor()
+        CSeli.execute('delete from expacientes where id= %s',(id,))
+        mysql.connection.commit()
+        return jsonify({'message': 'success'})
+    return jsonify({'message': 'error'})
 # ---------------------------------------------------------------------------------------------------
 
 @app.route('/generareceta/<id>')
@@ -543,8 +550,24 @@ def generareceta(id):
     CCmedico= mysql.connection.cursor()
     CCmedico.execute('select * from medicos where cedula=%s', (cedula_medico,))
     medicos= CCmedico.fetchall()
+    
+    csfecha = mysql.connection.cursor()
+    csfecha.execute('SELECT * FROM expacientes where id = %s', (id,))
+    datafecha = csfecha.fetchone()
+    idpaciente = datafecha[2]
+    
+    CCpaciente = mysql.connection.cursor()
+    CCpaciente.execute('select * from pacientes where id=%s', (idpaciente,))
+    paciente = CCpaciente.fetchone()
+    Vfechanacimiento = paciente[4]
+    print(Vfechanacimiento)
 
-    html_content = render_template('pdf.html', pacientes=data,edad=age,med=medicos)
+    hoy = datetime.today()
+    age = hoy.year - Vfechanacimiento.year - ((hoy.month, hoy.day) < (Vfechanacimiento.month, Vfechanacimiento.day))
+    session['patient_age'] = age
+    edadpac = session['patient_age']
+
+    html_content = render_template('pdf.html', pacientes=data,edad=edadpac,med=medicos)
 
     response = Response(content_type='application/pdf')
     response.headers['Content-Disposition'] = 'inline; filename=receta.pdf'
@@ -566,6 +589,7 @@ def generareceta(id):
     else:
         buffer.close()
         return "Error generando el PDF"
+
 
 if __name__ == '__main__':
  app.run(port=5800,debug=True)
